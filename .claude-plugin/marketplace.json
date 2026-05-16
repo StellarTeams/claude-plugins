@@ -1,0 +1,23 @@
+{
+    "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
+    "name": "stellar-plugins",
+    "version": "1.0.11",
+    "description": "Bundled plugins for Claude Code",
+    "owner": {
+        "name": "StellarTeam"
+    },
+    "allowCrossMarketplaceDependenciesOn": [
+        "claude-plugins-official"
+    ],
+    "plugins": [
+        {
+            "name": "base-skills",
+            "description": "Git workflow tools — commit messages, branch creation and OpenSpec integration.",
+            "source": "./plugins/base-skills",
+            "category": "development",
+            "dependencies":  [
+                "context7@claude-plugins-official"
+            ]
+        }
+    ]
+}

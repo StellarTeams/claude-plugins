@@ -1,0 +1,9 @@
+{
+  "name": "base-skills",
+  "version": "1.0.11",
+  "description": "Git workflow tools — commit messages, branch creation and OpenSpec integration.",
+  "author": { "name": "StellarTeam" },
+  "dependencies":  [
+      "context7@claude-plugins-official"
+    ]
+}

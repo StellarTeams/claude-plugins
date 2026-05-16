@@ -1,0 +1,31 @@
+# claude-plugins
+
+A marketplace of Claude Code plugins by StellarTeam.
+
+## Plugins
+
+| Plugin | Description |
+|--------|-------------|
+| [**base-skills**](./plugins/base-skills/) | Git workflow and spec-driven development tools — commit messages, branch creation, and OpenSpec auto-setup |
+
+## Install
+
+```bash
+/plugin marketplace add StellarTeam/claude-plugins
+```
+
+Then install a specific plugin:
+
+```bash
+/plugin install base-skills@StellarTeam/claude-plugins
+```
+
+## Structure
+
+```
+plugins/
+└── base-skills/        # Git workflow + OpenSpec integration
+    ├── skills/         # Claude Code skills
+    ├── hooks/          # SessionStart automation
+    └── .mcp.json       # OpenSpec MCP server
+```
