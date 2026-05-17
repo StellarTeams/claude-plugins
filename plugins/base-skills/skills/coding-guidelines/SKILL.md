@@ -9,7 +9,7 @@ Behavioral guidelines to reduce common LLM coding mistakes.
 
 **Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
-## 1. Think Before Coding
+## 1. Think Before Coding — and During Spec Generation
 
 **Don't assume. Don't hide confusion. Surface tradeoffs.**
 
@@ -18,6 +18,12 @@ Before implementing:
 - If multiple interpretations exist, present them - don't pick silently.
 - If a simpler approach exists, say so. Push back when warranted.
 - If something is unclear, stop. Name what's confusing. Ask.
+
+During spec generation:
+- Identify gaps in requirements before writing the spec.
+- Question scope boundaries — name what is explicitly in vs. out.
+- Ask what "done" looks like before detailing the approach.
+- Flag conflicting constraints early rather than resolving them silently.
 
 ## 2. Simplicity First
 
@@ -28,6 +34,8 @@ Before implementing:
 - No "flexibility" or "configurability" that wasn't requested.
 - No error handling for impossible scenarios.
 - If you write 200 lines and it could be 50, rewrite it.
+- Consider alternatives and go with the simplest and fastest solution
+- Not just the first working one. If a simpler or more performant approach exists, rewrite it.
 
 Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
 
