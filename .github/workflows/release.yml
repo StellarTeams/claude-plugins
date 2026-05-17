@@ -1,0 +1,13 @@
+name: Release
+
+on:
+  schedule:
+    - cron: "0 0 1 * *"
+  workflow_dispatch:
+
+jobs:
+  release:
+    name: Release
+    permissions:
+      contents: write
+    uses: StellarTeams/GHA.workflows/.github/workflows/changelog.yml@main

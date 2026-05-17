@@ -1,0 +1,16 @@
+name: Merged pull requests
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+
+jobs:
+  slack:
+    name: Slack
+    uses: StellarTeams/GHA.workflows/.github/workflows/slack-merged-pull-request.yml@main
+    secrets:
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID: ${{ secrets.SLACK_CHANNEL_ID }}
