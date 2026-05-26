@@ -36,9 +36,14 @@ Only use the following emojis:
 Use the following format for making the commit message:
 
 ```
-<emoji> <type>: <concise_description>
+<type>: <concise_description>
 <optional_body_explaining_why>
 ```
+
+Do NOT include any trailers, signatures, or footers. Specifically:
+- No `Co-Authored-By:` line
+- No `Signed-off-by:` line
+- No "Generated with Claude Code" footer
 
 ## Output:
 
