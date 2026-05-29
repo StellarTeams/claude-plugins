@@ -7,7 +7,7 @@ Git workflow and spec-driven development tools for Claude Code.
 | Skill | Trigger | Description |
 |-------|---------|-------------|
 | **commit-message** | Ask Claude to commit | Analyzes staged git diff and proposes a commit message with emoji prefix |
-| **start-change** | `/start-change <idea>` | Creates a git branch from your idea and hands off to `/opsx:propose` |
+| **spec** | `/spec <idea>` | Creates a git worktree from your idea and hands off to `/opsx:propose` |
 | **openspec-init** | `/openspec-init` | Manually initialize or re-initialize OpenSpec in the current project |
 
 ## Auto-setup
@@ -49,10 +49,10 @@ Adds login/logout endpoints and token refresh flow to support stateless auth.
 ### Start a new feature
 
 ```
-/start-change Add Stripe payment support
+/spec Add Stripe payment support
 ```
 
-This creates a branch `add-stripe-payment-support`, switches to it, and opens an OpenSpec proposal automatically.
+This creates a worktree at `../my-repo-add-stripe-payment-support` on a new branch, leaving your current working tree untouched, and opens an OpenSpec proposal automatically.
 
 ### Re-initialize OpenSpec
 
