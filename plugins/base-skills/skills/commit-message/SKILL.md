@@ -1,5 +1,5 @@
 ---
-name: Commit message
+name: commit-message
 description: Create a commit message by analyzing git diffs. Use this whenever you are about to create a git commit — invoke it instead of writing `git commit -m` by hand.
 allowed-tools: Bash(git status:*), Bash(git diff --staged), Bash(git commit:*), Bash(git add:*)
 ---
