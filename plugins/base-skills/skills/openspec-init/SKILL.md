@@ -2,7 +2,7 @@
 name: OpenSpec Init
 description: Initialize or re-initialize OpenSpec in the current project with Claude Code integration
 user-invocable: true
-allowed-tools: Bash(command:*), Bash(npm:*), Bash(openspec:*), Bash(npx:*)
+allowed-tools: Bash(command:*), Bash(openspec:*), Bash(npx:*)
 ---
 
 Set up OpenSpec in the current project so you can use spec-driven development with `/opsx:propose` and related commands.
@@ -16,20 +16,18 @@ Set up OpenSpec in the current project so you can use spec-driven development wi
    - If yes, run with `--force`.
    - If no, stop and tell the user everything is already set up.
 
-3. Check whether the `openspec` CLI is installed globally:
+3. Determine the command to use:
    ```bash
    command -v openspec
    ```
-   - If found, use the global binary in step 4.
-   - If not found, install it globally:
-     ```bash
-     npm install -g @fission-ai/openspec
-     ```
-     If the install fails due to permissions, fall back to `npx --yes @fission-ai/openspec@latest` for step 4 and tell the user they may want to fix npm's global prefix (e.g. via `nvm` or `npm config set prefix`) so future runs use the global binary.
+   - If found, use `openspec` directly.
+   - If not found, use `npx --yes @fission-ai/openspec@latest` — no global install required.
 
-4. Run initialization (use `openspec` if installed globally, otherwise `npx --yes @fission-ai/openspec@latest`):
+4. Run initialization:
    ```bash
    openspec init --tools claude
+   # or
+   npx --yes @fission-ai/openspec@latest init --tools claude
    ```
    (Add `--force` if the user confirmed overwrite.)
 
