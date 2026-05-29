@@ -1,7 +1,7 @@
 ---
 name: spec
 description: Turn a request into a ready-to-implement spec — worktree and proposal in one command
-allowed-tools: Bash(which:*), Bash(git worktree:*), Bash(git rev-parse:*), Bash(openspec:*), Bash(npx --yes @fission-ai/openspec@latest:*), Write, EnterWorktree
+allowed-tools: Bash(test:*), Bash(git worktree:*), Bash(git rev-parse:*), Bash(npx --yes @fission-ai/openspec@latest:*), Write, EnterWorktree
 user-invocable: true
 ---
 
@@ -36,12 +36,13 @@ Always load and follow the `coding-guidelines` skill before generating spec.
 
 4. **Switch into the new worktree** using the `EnterWorktree` tool with the worktree path from step 3.
 
-5. **Hand off to OpenSpec**:
+5. **Ensure OpenSpec is initialized in the worktree.** The SessionStart hook only initializes OpenSpec in the directory the session started in; a freshly created worktree does **not** inherit it (no `.claude/` commands, no `openspec/config.yaml`). Check and initialize if missing:
+
    ```bash
-   which openspec
+   test -f openspec/config.yaml || npx --yes @fission-ai/openspec@latest init --tools claude
    ```
-   - If found, invoke the `OPSX: Propose` skill passing the original request as the argument.
-   - If not found, run directly:
-     ```bash
-     npx --yes @fission-ai/openspec@latest new change "<request>"
-     ```
+
+6. **Hand off to OpenSpec Propose.** Invoke the `OPSX: Propose` skill (the `/opsx:propose` command) passing the original request as the argument. It scaffolds the change **and** authors `proposal.md`, the spec deltas, and `tasks.md` — this is what produces the ready-to-implement spec.
+
+   - If the `/opsx:propose` command/skill isn't yet available (it is loaded from `.claude/` at startup, so a worktree initialized mid-session may not expose it until a restart), tell the user to restart Claude Code in the worktree, then run `/opsx:propose "<request>"`.
+   - Do **not** fall back to `npx … new change`: that only scaffolds an empty change and never writes the proposal content.
