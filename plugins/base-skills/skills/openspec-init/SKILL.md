@@ -2,7 +2,7 @@
 name: OpenSpec Init
 description: Initialize or re-initialize OpenSpec in the current project with Claude Code integration
 user-invocable: true
-allowed-tools: Bash(command:*), Bash(openspec:*), Bash(npx:*)
+allowed-tools: Bash(which:*), Bash(openspec:*), Bash(npx --yes @fission-ai/openspec@latest:*)
 ---
 
 Set up OpenSpec in the current project so you can use spec-driven development with `/opsx:propose` and related commands.
@@ -18,7 +18,7 @@ Set up OpenSpec in the current project so you can use spec-driven development wi
 
 3. Determine the command to use:
    ```bash
-   command -v openspec
+   which openspec
    ```
    - If found, use `openspec` directly.
    - If not found, use `npx --yes @fission-ai/openspec@latest` — no global install required.
