@@ -37,9 +37,9 @@ Always load and follow the `coding-guidelines` skill before generating spec.
 4. **Switch into the new worktree** using the `EnterWorktree` tool with the worktree path from step 3.
 
 5. **Ask the user whether to open the worktree in an editor.** Do **not** launch anything automatically. Use the **AskUserQuestion tool** with options:
+   - **Don't open** — leave editors as-is; just keep working in this session
    - **WebStorm** — open the worktree in WebStorm
    - **Zed** — open the worktree in Zed
-   - **Don't open** — leave editors as-is; just keep working in this session
 
    An editor window is bound to the folder it opened and cannot be relocated, so opening launches the worktree as a **new window** on the new branch — the user's original window stays on `main` and they can close it. Based on the answer, run the matching launcher with the worktree path from step 3:
 
