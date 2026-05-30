@@ -36,7 +36,7 @@ Always load and follow the `coding-guidelines` skill before generating spec.
 
 4. **Switch into the new worktree** using the `EnterWorktree` tool with the worktree path from step 3.
 
-5. **Ask the user whether to open the worktree in an editor.** Do **not** launch anything automatically. Use the **AskUserQuestion tool** with options:
+5. **Ask the user whether to open the worktree in an editor.** Do **not** launch anything automatically. Use the **AskUserQuestion tool** and wait for the user to select an option:
    - **Don't open** — leave editors as-is; just keep working in this session
    - **WebStorm** — open the worktree in WebStorm
    - **Zed** — open the worktree in Zed
