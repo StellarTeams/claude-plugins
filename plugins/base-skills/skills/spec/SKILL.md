@@ -1,7 +1,7 @@
 ---
 name: spec
 description: Turn a request into a ready-to-implement spec — worktree and proposal in one command
-allowed-tools: Bash(test:*), Bash(git worktree:*), Bash(git rev-parse:*), Bash(npx --yes @fission-ai/openspec@latest:*), Bash(open:*), Bash(code:*), Bash(webstorm:*), Bash(idea:*), Bash(cursor:*), Write, EnterWorktree
+allowed-tools: Bash(test:*), Bash(git worktree:*), Bash(git rev-parse:*), Bash(npx --yes @fission-ai/openspec@latest:*), Bash(open:*), Bash(webstorm:*), Bash(zed:*), Write, EnterWorktree, AskUserQuestion
 user-invocable: true
 ---
 
@@ -36,16 +36,21 @@ Always load and follow the `coding-guidelines` skill before generating spec.
 
 4. **Switch into the new worktree** using the `EnterWorktree` tool with the worktree path from step 3.
 
-5. **Open the worktree in the IDE** so the editor follows the new branch. An IDE window is bound to the folder it opened and cannot be relocated, so this opens the worktree as a **new window** on the new branch — the user's original window stays on `main` and they can close it. Use whichever launcher is available (a JetBrains/VS Code CLI launcher on `PATH`, else macOS `open`), passing the worktree path from step 3:
+5. **Ask the user whether to open the worktree in an editor.** Do **not** launch anything automatically. Use the **AskUserQuestion tool** with options:
+   - **WebStorm** — open the worktree in WebStorm
+   - **Zed** — open the worktree in Zed
+   - **Don't open** — leave editors as-is; just keep working in this session
+
+   An editor window is bound to the folder it opened and cannot be relocated, so opening launches the worktree as a **new window** on the new branch — the user's original window stays on `main` and they can close it. Based on the answer, run the matching launcher with the worktree path from step 3:
 
    ```bash
-   # Try a CLI launcher first (JetBrains: webstorm/idea; VS Code: code; Cursor: cursor)
-   webstorm <worktree-path>
-   # macOS fallback if no launcher is on PATH (adjust the app name to the installed IDE):
-   open -na "WebStorm.app" --args <worktree-path>
+   # WebStorm (JetBrains CLI launcher; macOS fallback if not on PATH):
+   webstorm <worktree-path> || open -na "WebStorm.app" --args <worktree-path>
+   # Zed (CLI launcher; macOS fallback if not on PATH):
+   zed <worktree-path> || open -na "Zed.app" --args <worktree-path>
    ```
 
-   - Pick the command matching the user's IDE; don't run several. If none works, just print the worktree path and tell the user to open it manually.
+   - Run only the launcher for the chosen editor; if the user picked "Don't open", skip this step. If the launcher fails, print the worktree path and tell the user to open it manually.
 
 6. **Ensure OpenSpec is initialized in the worktree.** The SessionStart hook only initializes OpenSpec in the directory the session started in; a freshly created worktree does **not** inherit it (no `.claude/` commands, no `openspec/config.yaml`). Check and initialize if missing:
 
