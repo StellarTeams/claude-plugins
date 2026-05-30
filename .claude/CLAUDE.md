@@ -25,6 +25,8 @@ The top-level `.claude-plugin/marketplace.json` is the marketplace index: it lis
 
 **Plugin dependencies** — declared in both `plugin.json` and `marketplace.json`. Cross-marketplace dependencies (e.g. `context7@claude-plugins-official`) are allowed only for marketplaces listed in `allowCrossMarketplaceDependenciesOn`.
 
+**Version bumps** — any change to a plugin's contents (a skill, hook, script, or metadata) MUST bump `version` in that plugin's `.claude-plugin/plugin.json`. Use semver: patch for fixes/tweaks, minor for new skills or features. The version lives only in `plugin.json` — `marketplace.json` carries no version field. Don't forget this — it's how installed copies know to update.
+
 ## CI
 
 - **Release** (`release.yml`) — runs on the 1st of each month (and manually); calls the shared `StellarTeams/GHA.workflows` changelog workflow. No secrets required.
@@ -40,3 +42,4 @@ The top-level `.claude-plugin/marketplace.json` is the marketplace index: it lis
 
 1. Create `plugins/<plugin>/skills/<skill-name>/SKILL.md` with correct frontmatter.
 2. If the skill needs to run on session start, add a hook entry to `hooks/hooks.json`.
+3. Bump the plugin's `version` in `.claude-plugin/plugin.json` (see **Version bumps** above).
