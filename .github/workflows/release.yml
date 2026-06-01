@@ -8,6 +8,101 @@ on:
 jobs:
   release:
     name: Release
+    runs-on: ubuntu-latest
     permissions:
       contents: write
-    uses: StellarTeams/GHA.workflows/.github/workflows/changelog.yml@main
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Check if commit tagged and for meaningful changes
+        id: detect_changes
+        shell: bash
+        run: |
+          latest_tag=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          if [ -z "$latest_tag" ]; then
+            echo "No tags found, assuming meaningful changes exist."
+            echo "HAS_CHANGES=true" >> "$GITHUB_OUTPUT"
+            echo "INITIAL_TAG=$(git rev-list --max-parents=0 HEAD)" >> "$GITHUB_OUTPUT"
+            exit 0
+          else
+            echo "Latest tag found: $latest_tag"
+            echo "INITIAL_TAG=$latest_tag" >> "$GITHUB_OUTPUT"
+          fi
+
+          # Count all commits since latest tag
+          total_commit_count=$(git rev-list --count "$latest_tag"..HEAD)
+
+          if [ "$total_commit_count" -eq 0 ]; then
+            echo "No commits found since last tag, skipping changelog generation."
+            echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # Count changelog update commits
+          changelog_commit_count=$(git rev-list "$latest_tag"..HEAD --grep="^docs: update CHANGELOG.md" | wc -l)
+
+          # Calculate meaningful commits
+          meaningful_commit_count=$((total_commit_count - changelog_commit_count))
+
+          # Final logic
+          if [ "$meaningful_commit_count" -gt 0 ]; then
+            echo "HAS_CHANGES=true" >> "$GITHUB_OUTPUT"
+            echo "Found $meaningful_commit_count meaningful commits since last tag, proceeding with changelog generation."
+          else
+            echo "HAS_CHANGES=false" >> "$GITHUB_OUTPUT"
+            echo "No meaningful changes found since last tag, skipping changelog generation."
+          fi
+
+      - name: Generate Tag Value
+        id: generate_tag
+        if: ${{ steps.detect_changes.outputs.HAS_CHANGES == 'true' }}
+        run: |
+          previous_date=$(date -u -d '-1 day' +'%y.%m.%d')
+          echo "tag_value=v${previous_date}" >> "$GITHUB_OUTPUT"
+
+      - name: Create Tag
+        uses: actions/github-script@v6
+        if: ${{ steps.detect_changes.outputs.HAS_CHANGES == 'true' }}
+        with:
+          script: |
+            github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/tags/${{ steps.generate_tag.outputs.tag_value }}`,
+                sha: context.sha
+            })
+
+      - name: Update CHANGELOG
+        uses: requarks/changelog-action@v1
+        id: changelog
+        if: ${{ steps.detect_changes.outputs.HAS_CHANGES == 'true' }}
+        with:
+          token: ${{ github.token }}
+          fromTag: ${{ steps.generate_tag.outputs.tag_value }} # Use the tag directly
+          toTag: ${{ steps.detect_changes.outputs.INITIAL_TAG }}
+          includeInvalidCommits: true
+          includeRefIssues: true
+          writeToFile: true
+          excludeTypes: ''
+
+      - name: Create Release
+        uses: ncipollo/release-action@v1.15.0
+        if: ${{ steps.detect_changes.outputs.HAS_CHANGES == 'true' }}
+        with:
+          allowUpdates: "true"
+          makeLatest: "true"
+          tag: ${{ steps.generate_tag.outputs.tag_value }} # Pass the tag here, not name
+          body: ${{ steps.changelog.outputs.changes }}
+          token: ${{ github.token }}
+
+      - name: Commit CHANGELOG.md
+        uses: stefanzweifel/git-auto-commit-action@v5.1.0
+        if: ${{ steps.detect_changes.outputs.HAS_CHANGES == 'true' }}
+        with:
+          branch: main
+          commit_message: 'docs: update CHANGELOG.md for ${{ steps.generate_tag.outputs.tag_value }} [skip ci]'
+          file_pattern: CHANGELOG.md
