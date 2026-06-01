@@ -24,8 +24,8 @@ Then install a specific plugin:
 
 ```
 plugins/
-└── base-skills/        # Git workflow + OpenSpec integration
-    ├── skills/         # Claude Code skills
-    ├── hooks/          # SessionStart automation
-    └── .mcp.json       # OpenSpec MCP server
+└── base-skills/                    # Git workflow + OpenSpec integration
+    ├── .claude-plugin/plugin.json  # Plugin metadata
+    ├── skills/                     # Claude Code skills
+    └── hooks/                      # SessionStart + PreToolUse automation
 ```

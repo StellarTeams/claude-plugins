@@ -1,0 +1,62 @@
+name: Validate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate JSON
+        run: |
+          fail=0
+          for f in $(git ls-files '*.json'); do
+            if ! jq empty "$f" 2>jqerr; then
+              echo "::error file=$f::Invalid JSON"
+              cat jqerr
+              fail=1
+            fi
+          done
+          rm -f jqerr
+          exit $fail
+
+      - name: Shellcheck hook scripts
+        run: |
+          shopt -s nullglob
+          scripts=$(git ls-files 'plugins/*/hooks/scripts/*.sh')
+          if [ -z "$scripts" ]; then
+            echo "No hook scripts to check."
+            exit 0
+          fi
+          # shellcheck disabled for style/info noise; fail on warnings and errors.
+          echo "$scripts" | xargs shellcheck -S warning
+
+      - name: Enforce plugin version bump
+        if: github.event_name == 'pull_request'
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          changed=$(git diff --name-only "$BASE_SHA" HEAD)
+          fail=0
+          for plugin_json in $(git ls-files 'plugins/*/.claude-plugin/plugin.json'); do
+            plugin_dir=${plugin_json%/.claude-plugin/plugin.json}
+            if echo "$changed" | grep -q "^$plugin_dir/"; then
+              new=$(jq -r '.version' "$plugin_json")
+              old=$(git show "$BASE_SHA:$plugin_json" 2>/dev/null | jq -r '.version' 2>/dev/null || echo "")
+              if [ -z "$old" ]; then
+                echo "::notice file=$plugin_json::New plugin '$plugin_dir' (version $new) — no previous version to compare."
+              elif [ "$new" = "$old" ]; then
+                echo "::error file=$plugin_json::'$plugin_dir' changed but version was not bumped (still $new). Bump it per CLAUDE.md (Version bumps)."
+                fail=1
+              fi
+            fi
+          done
+          exit $fail

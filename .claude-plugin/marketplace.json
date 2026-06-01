@@ -15,7 +15,7 @@
             "description": "Git workflow tools — commit messages, branch creation and OpenSpec integration.",
             "source": "./plugins/base-skills",
             "category": "development",
-            "dependencies":  [
+            "dependencies": [
                 "context7@claude-plugins-official"
             ]
         }

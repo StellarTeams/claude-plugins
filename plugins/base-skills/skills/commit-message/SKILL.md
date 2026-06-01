@@ -11,8 +11,8 @@ allowed-tools: Bash(git status:*), Bash(git diff --staged), Bash(git commit:*), 
 
 Analyze the above staged git changes and create a commit message. Use present tense and explain "why" something has changed, not just "what" has changed.
 
-## Commit types with emojis:
-Only use the following emojis:
+## Commit types:
+Only use one of the following types as the prefix. Do NOT add an emoji.
 
 - `feat:` - New feature
 - `fix:` - Bug fix
@@ -48,7 +48,7 @@ Do NOT include any trailers, signatures, or footers. Specifically:
 ## Output:
 
 1. Show a summary of changes currently staged
-2. Propose commit a message with the appropriate emoji
+2. Propose a commit message with the appropriate type prefix
 3. Ask for confirmation before committing
 
 DO NOT auto-commit - wait for user approval and only commit if the user says so.

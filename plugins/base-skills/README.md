@@ -6,23 +6,28 @@ Git workflow and spec-driven development tools for Claude Code.
 
 | Skill | Trigger | Description |
 |-------|---------|-------------|
-| **commit-message** | Ask Claude to commit | Analyzes staged git diff and proposes a commit message with emoji prefix |
+| **commit-message** | Ask Claude to commit | Analyzes staged git diff and proposes a `<type>:` prefixed commit message |
 | **spec** | `/spec <idea>` | Creates a git worktree from your idea and hands off to `/opsx:propose` |
 | **openspec-init** | `/openspec-init` | Manually initialize or re-initialize OpenSpec in the current project |
+| **coding-guidelines** | Loaded by `/spec`, or on request | Behavioral guidelines that curb common LLM coding mistakes — surgical changes, simplicity, verifiable success criteria |
 
-## Auto-setup
+## Hooks
 
-When you start a Claude Code session in a project that doesn't have OpenSpec initialized, this plugin automatically runs `openspec init --tools claude` for you. No manual setup needed.
+This plugin ships automation that runs without any manual setup:
 
-What gets created:
-- `openspec/config.yaml` — spec-driven workflow config
-- `.claude/skills/` and `.claude/commands/` — OpenSpec slash commands (`/opsx:propose`, etc.)
+**SessionStart**
+- **OpenSpec auto-init** — when you start a session in a project without OpenSpec, runs `openspec init --tools claude` for you. Creates `openspec/config.yaml` and the `/opsx:*` slash commands in `.claude/`.
+- **Commit convention** — injects the `<type>:` commit-message convention into context so commits follow it even when the skill isn't explicitly invoked.
+
+**PreToolUse**
+- **guard-git** — intercepts any automatic `git commit` / `git push` and turns it into an explicit confirmation prompt, keeping a human in the loop.
+- **auto-approve-openspec** — auto-approves pure `openspec` / `npx @fission-ai/openspec` calls so the spec/propose flow runs uninterrupted.
 
 ## Install
 
 ```bash
-/plugin marketplace add StellarTeam/claude-base-skills
-/plugin install base-skills@StellarTeam/claude-base-skills
+/plugin marketplace add StellarTeam/claude-plugins
+/plugin install base-skills@StellarTeam/claude-plugins
 ```
 
 ## Dependencies
@@ -30,8 +35,7 @@ What gets created:
 | Dependency | How it's handled |
 |-----------|-----------------|
 | **context7** | Auto-installed as a plugin dependency |
-| **@fission-ai/openspec** | Auto-run via `npx` — no global install needed |
-| **opsx** | Required for `start-change`. Install separately if needed |
+| **@fission-ai/openspec** | Auto-run via `npx` (or global install) — no manual setup needed; provides the `/opsx:*` commands |
 
 ## Usage
 
@@ -42,7 +46,7 @@ Stage your files and ask Claude:
 
 Claude will analyze the diff and propose a message like:
 ```
-✨ feat: add user authentication via JWT
+feat: add user authentication via JWT
 Adds login/logout endpoints and token refresh flow to support stateless auth.
 ```
 

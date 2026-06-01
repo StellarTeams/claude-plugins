@@ -23,11 +23,6 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/init-context7.sh",
-            "timeout": 60
-          },
-          {
-            "type": "command",
             "command": "bash ${CLAUDE_PLUGIN_ROOT}/hooks/scripts/init-openspec.sh",
             "timeout": 60
           },

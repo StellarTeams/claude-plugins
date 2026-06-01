@@ -21,7 +21,7 @@ The top-level `.claude-plugin/marketplace.json` is the marketplace index: it lis
 
 **Skills (`SKILL.md`)** — The frontmatter `allowed-tools` field is a whitelist of tools the skill may use (e.g. `Bash(git diff --staged)`). Skills that should be user-invocable via a slash command need `user-invocable: true`. The body is the prompt Claude receives when the skill is triggered.
 
-**Hooks (`hooks.json`)** — `${CLAUDE_PLUGIN_ROOT}` expands to the plugin's root directory at runtime. Hooks use `"type": "command"` with a `timeout` in seconds. Output written to stderr with `{"additionalContext": "..."}` format surfaces a message to Claude.
+**Hooks (`hooks.json`)** — `${CLAUDE_PLUGIN_ROOT}` expands to the plugin's root directory at runtime. Hooks use `"type": "command"` with a `timeout` in seconds. For SessionStart hooks, a script's stdout is added to the session context — either as plain text or a `{"additionalContext": "..."}` JSON object. PreToolUse hooks instead emit a `{"hookSpecificOutput": {...}}` JSON object on stdout to allow/ask/deny a tool call.
 
 **Plugin dependencies** — declared in both `plugin.json` and `marketplace.json`. Cross-marketplace dependencies (e.g. `context7@claude-plugins-official`) are allowed only for marketplaces listed in `allowCrossMarketplaceDependenciesOn`.
 
@@ -29,6 +29,7 @@ The top-level `.claude-plugin/marketplace.json` is the marketplace index: it lis
 
 ## CI
 
+- **Validate** (`validate.yml`) — runs on every PR and on push to `main`. Checks JSON validity (all tracked `*.json`), shellchecks the hook scripts, and on PRs enforces that any changed plugin bumped its `version` (see **Version bumps**). No secrets required.
 - **Release** (`release.yml`) — runs on the 1st of each month (and manually); calls the shared `StellarTeams/GHA.workflows` changelog workflow. No secrets required.
 - **Notify** (`notify.yml`) — posts to Slack when a PR merges to `main`. Requires `SLACK_BOT_TOKEN` and `SLACK_CHANNEL_ID` secrets.
 
