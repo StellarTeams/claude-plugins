@@ -36,6 +36,8 @@ Always load and follow the `coding-guidelines` skill before generating spec.
 
 4. **Switch into the new worktree** using the `EnterWorktree` tool with the worktree path from step 3.
 
+   - **Do not ask about opening an editor here.** Switching the session into the worktree is *not* the moment to prompt for WebStorm/Zed — that is step 8, and only after the spec exists. Proceed straight to step 5.
+
 5. **Ensure OpenSpec is initialized in the worktree.** The SessionStart hook only initializes OpenSpec in the directory the session started in; a freshly created worktree does **not** inherit it (no `.claude/` commands, no `openspec/config.yaml`). Check and initialize if missing:
 
    ```bash
@@ -54,7 +56,7 @@ Always load and follow the `coding-guidelines` skill before generating spec.
    - If the `/opsx:propose` command/skill isn't yet available (it is loaded from `.claude/` at startup, so a worktree initialized mid-session may not expose it until a restart), tell the user to restart Claude Code in the worktree, then run `/opsx:propose "<request>"`.
    - Do **not** fall back to `npx … new change`: that only scaffolds an empty change and never writes the proposal content.
 
-8. **As the final step, ask the user whether to open the worktree in an editor.** The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. The **only** way to ask is the **AskUserQuestion tool** — wait for the user to select an option:
+8. **As the final step — and only after step 7 has produced the spec — ask the user whether to open the worktree in an editor.** This must be the *last* thing the skill does. Do not run this prompt earlier in the flow (in particular, not during or right after the worktree switch in step 4); if the spec from step 7 does not yet exist, you are too early. The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. The **only** way to ask is the **AskUserQuestion tool** — wait for the user to select an option:
    - **Don't open** — leave editors as-is; just keep working in this session
    - **WebStorm** — open the worktree in WebStorm
    - **Zed** — open the worktree in Zed
