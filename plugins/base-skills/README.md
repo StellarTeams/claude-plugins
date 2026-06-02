@@ -7,7 +7,7 @@ Git workflow and spec-driven development tools for Claude Code.
 | Skill | Trigger | Description |
 |-------|---------|-------------|
 | **commit-message** | Ask Claude to commit | Analyzes staged git diff and proposes a `<type>:` prefixed commit message |
-| **spec** | `/spec <idea>` | Creates a git worktree from your idea and hands off to `/opsx:propose` |
+| **spec** | `/spec <idea>` | Creates a git worktree from your idea, researches the change in plan mode for your approval, then hands off to `/opsx:propose` |
 | **openspec-init** | `/openspec-init` | Manually initialize or re-initialize OpenSpec in the current project |
 | **coding-guidelines** | Loaded by `/spec`, or on request | Behavioral guidelines that curb common LLM coding mistakes — surgical changes, simplicity, verifiable success criteria |
 
@@ -56,7 +56,13 @@ Adds login/logout endpoints and token refresh flow to support stateless auth.
 /spec Add Stripe payment support
 ```
 
-This creates a worktree at `../my-repo-add-stripe-payment-support` on a new branch, leaving your current working tree untouched, and opens an OpenSpec proposal automatically.
+This runs the full spec flow:
+
+1. Creates a worktree at `../my-repo-add-stripe-payment-support` on a new branch, leaving your current working tree untouched.
+2. Initializes OpenSpec in the worktree if it isn't already.
+3. **Enters plan mode** to research the change against the codebase, then presents a plan for you to **review and approve**.
+4. Feeds the approved plan to `/opsx:propose`, which authors `proposal.md`, `design.md`, and `tasks.md`.
+5. Offers to open the worktree in WebStorm or Zed.
 
 ### Re-initialize OpenSpec
 

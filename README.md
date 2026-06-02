@@ -6,7 +6,7 @@ A marketplace of Claude Code plugins by StellarTeam.
 
 | Plugin | Description |
 |-------------------------------------------|------------------------------------------------------------------------------------------------------|
-| [**base-skills**](./plugins/base-skills/) | Git workflow and spec-driven development tools — commit messages, worktree creation, and OpenSpec auto-setup |
+| [**base-skills**](./plugins/base-skills/) | Git workflow and spec-driven development — commit messages, worktree + plan-mode research, and OpenSpec auto-setup |
 
 ## Install
 
