@@ -54,10 +54,12 @@ Always load and follow the `coding-guidelines` skill before generating spec.
    - If the `/opsx:propose` command/skill isn't yet available (it is loaded from `.claude/` at startup, so a worktree initialized mid-session may not expose it until a restart), tell the user to restart Claude Code in the worktree, then run `/opsx:propose "<request>"`.
    - Do **not** fall back to `npx … new change`: that only scaffolds an empty change and never writes the proposal content.
 
-8. **As the final step, ask the user whether to open the worktree in an editor.** The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. Use the **AskUserQuestion tool** and wait for the user to select an option:
+8. **As the final step, ask the user whether to open the worktree in an editor.** The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. The **only** way to ask is the **AskUserQuestion tool** — wait for the user to select an option:
    - **Don't open** — leave editors as-is; just keep working in this session
    - **WebStorm** — open the worktree in WebStorm
    - **Zed** — open the worktree in Zed
+
+   **Never prompt from the shell.** Do not use `read` / `read -p` (or any other shell prompt) to ask this — `read` is not in `allowed-tools`, and `read -p` silently fails under the user's zsh: there `-p` means "read from a coprocess", so it errors with `read: -p: no coprocess` and falls straight through without ever asking (this is the exact bug that made earlier runs skip this step). Always use the AskUserQuestion tool.
 
    An editor window is bound to the folder it opened and cannot be relocated, so opening launches the worktree as a **new window** on the new branch — the user's original window stays on `main` and they can close it. Based on the answer, run the matching launcher with the worktree path from step 3:
 
