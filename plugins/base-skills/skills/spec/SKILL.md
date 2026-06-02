@@ -1,7 +1,7 @@
 ---
 name: spec
 description: Turn a request into a ready-to-implement spec — worktree and proposal in one command
-allowed-tools: Bash(test:*), Bash(git worktree:*), Bash(git rev-parse:*), Bash(npx --yes @fission-ai/openspec@latest:*), Bash(open:*), Bash(webstorm:*), Bash(zed:*), Write, EnterWorktree, AskUserQuestion
+allowed-tools: Bash(test:*), Bash(git worktree:*), Bash(git rev-parse:*), Bash(npx --yes @fission-ai/openspec@latest:*), Bash(open:*), Bash(webstorm:*), Bash(zed:*), Write, Read, Grep, Glob, EnterWorktree, EnterPlanMode, ExitPlanMode, AskUserQuestion
 user-invocable: true
 ---
 
@@ -42,12 +42,19 @@ Always load and follow the `coding-guidelines` skill before generating spec.
    test -f openspec/config.yaml || npx --yes @fission-ai/openspec@latest init --tools claude
    ```
 
-6. **Hand off to OpenSpec Propose.** Invoke the `OPSX: Propose` skill (the `/opsx:propose` command) passing the original request as the argument. It scaffolds the change **and** authors `proposal.md`, the spec deltas, and `tasks.md` — this is what produces the ready-to-implement spec.
+6. **Research the change in plan mode.** Before generating any spec, use plan mode to ground the proposal in the actual codebase and get the user's sign-off on the approach:
+
+   - Call **`EnterPlanMode`** (the user consents to entering plan mode).
+   - Explore the worktree with `Read` / `Grep` / `Glob` to understand existing patterns, the concrete files the change will touch, and any relevant constraints. Follow the already-loaded `coding-guidelines` skill — search for existing functions, utilities, and patterns to reuse **before** proposing new code.
+   - Write the researched plan to the plan file named in the plan-mode system message (under `~/.claude/plans/`). Capture what `/opsx:propose` will need downstream: **the problem/context, the proposed approach, the concrete files to change, and how to verify** — so the same plan serves as both the user-facing approval artifact and the input to propose.
+   - Call **`ExitPlanMode`** so the user reviews and approves the plan. Their approval authorizes the propose/artifact-writing that follows.
+
+7. **Hand off to OpenSpec Propose, fed by the approved plan.** Invoke the `OPSX: Propose` skill (the `/opsx:propose` command) passing the original request as the change name/description. Ground its artifact authoring in the **approved plan** from step 6 (it is already in context; the plan file under `~/.claude/plans/` is also available to re-read) so that `proposal.md`, the spec deltas, and `tasks.md` are derived from the researched plan rather than the bare one-line request — this is what produces the ready-to-implement spec.
 
    - If the `/opsx:propose` command/skill isn't yet available (it is loaded from `.claude/` at startup, so a worktree initialized mid-session may not expose it until a restart), tell the user to restart Claude Code in the worktree, then run `/opsx:propose "<request>"`.
    - Do **not** fall back to `npx … new change`: that only scaffolds an empty change and never writes the proposal content.
 
-7. **As the final step, ask the user whether to open the worktree in an editor.** The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. Use the **AskUserQuestion tool** and wait for the user to select an option:
+8. **As the final step, ask the user whether to open the worktree in an editor.** The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. Use the **AskUserQuestion tool** and wait for the user to select an option:
    - **Don't open** — leave editors as-is; just keep working in this session
    - **WebStorm** — open the worktree in WebStorm
    - **Zed** — open the worktree in Zed
