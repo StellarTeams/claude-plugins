@@ -1,6 +1,6 @@
 # claude-plugins
 
-A marketplace of Claude Code plugins by StellarTeam.
+A marketplace of Claude Code plugins by StellarTeams.
 
 ## Plugins
 
@@ -11,13 +11,13 @@ A marketplace of Claude Code plugins by StellarTeam.
 ## Install
 
 ```bash
-/plugin marketplace add StellarTeam/claude-plugins
+/plugin marketplace add StellarTeams/claude-plugins
 ```
 
 Then install a specific plugin:
 
 ```bash
-/plugin install base-skills@StellarTeam/claude-plugins
+/plugin install base-skills@stellarteams
 ```
 
 ## Structure

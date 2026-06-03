@@ -1,10 +1,10 @@
 {
   "enabledPlugins": {
     "context7@claude-plugins-official": true,
-    "base-skills@stellar-plugins": true
+    "base-skills@stellarteams": true
   },
   "extraKnownMarketplaces": {
-    "stellar-plugins": {
+    "stellarteams": {
       "source": {
         "source": "git",
         "url": "https://github.com/StellarTeams/claude-plugins"

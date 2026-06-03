@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this repo is
 
-A Claude Code **plugin marketplace** maintained by StellarTeam. It publishes plugins that users install via `/plugin marketplace add StellarTeam/claude-plugins`. There is no build step, no test runner, and no package manager — everything is JSON, shell scripts, and Markdown.
+A Claude Code **plugin marketplace** maintained by StellarTeam (https://stellar.team). It publishes plugins that users install via `/plugin marketplace add StellarTeams/claude-plugins`. There is no build step, no test runner, and no package manager — everything is JSON, shell scripts, and Markdown.
 
 ## Plugin structure
 

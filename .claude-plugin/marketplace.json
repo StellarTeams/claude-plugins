@@ -1,10 +1,10 @@
 {
     "$schema": "https://json.schemastore.org/claude-code-marketplace.json",
-    "name": "stellar-plugins",
-    "version": "1.0.3",
+    "name": "stellarteams",
+    "version": "1.0.4",
     "description": "Bundled plugins for Claude Code",
     "owner": {
-        "name": "StellarTeam"
+        "name": "StellarTeams"
     },
     "allowCrossMarketplaceDependenciesOn": [
         "claude-plugins-official"

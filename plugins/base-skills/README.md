@@ -26,8 +26,8 @@ This plugin ships automation that runs without any manual setup:
 ## Install
 
 ```bash
-/plugin marketplace add StellarTeam/claude-plugins
-/plugin install base-skills@StellarTeam/claude-plugins
+/plugin marketplace add StellarTeams/claude-plugins
+/plugin install base-skills@stellarteams
 ```
 
 ## Dependencies
