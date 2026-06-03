@@ -20,7 +20,7 @@ This plugin ships automation that runs without any manual setup:
 - **Commit convention** — injects the `<type>:` commit-message convention into context so commits follow it even when the skill isn't explicitly invoked.
 
 **PreToolUse**
-- **guard-git** — intercepts any automatic `git commit` / `git push` and turns it into an explicit confirmation prompt, keeping a human in the loop.
+- **guard-git** — intercepts any automatic `git push` and turns it into an explicit confirmation prompt, keeping a human in the loop before anything leaves the machine. `git commit` is left to the behavioral commit-convention instruction (propose the message, wait for approval), so user-requested commits run without friction.
 - **auto-approve-openspec** — auto-approves pure `openspec` / `npx @fission-ai/openspec` calls so the spec/propose flow runs uninterrupted.
 
 ## Install
