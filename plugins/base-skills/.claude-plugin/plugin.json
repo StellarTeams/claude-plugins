@@ -1,6 +1,6 @@
 {
   "name": "base-skills",
-  "version": "1.5.0",
+  "version": "1.6.0",
   "description": "Git workflow tools — commit messages, branch creation and OpenSpec integration.",
   "author": { "name": "StellarTeams" },
   "dependencies": [
