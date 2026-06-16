@@ -1,13 +1,15 @@
 ---
 name: commit-message
 description: Create a commit message by analyzing git diffs. Use this whenever you are about to create a git commit — invoke it instead of writing `git commit -m` by hand.
-allowed-tools: Bash(git status:*), Bash(git diff --staged), Bash(git commit:*), Bash(git add:*)
+allowed-tools: Bash(git status:*), Bash(git diff --staged), Bash(git commit:*), Bash(git add:*), Bash(git branch --show-current), Bash(git log:*)
 ---
 
 ## Context:
 
 - Current git status: !`git status`
 - Current git diff: !`git diff --staged`
+- Current branch: !`git branch --show-current`
+- Recent commits: !`git log -10 --oneline`
 
 Analyze the above staged git changes and create a commit message. Use present tense and explain "why" something has changed, not just "what" has changed.
 
