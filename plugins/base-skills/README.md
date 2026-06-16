@@ -24,6 +24,7 @@ This plugin ships automation that runs without any manual setup:
 - **auto-approve-openspec** — auto-approves pure `openspec` / `npx @fission-ai/openspec` calls so the spec/propose flow runs uninterrupted.
 - **auto-approve-pkg** — auto-approves pure `pnpm` / `bun` calls (any subcommand) so the JS/TS inner loop runs without prompts. Commands that chain or embed others (`&&`, `|`, `$(…)`, …) are left to the normal prompt.
 - **auto-approve-bin** — auto-approves a command whose first token is a path into the project's `node_modules` (e.g. `./node_modules/.bin/tsc`, `node_modules/.bin/biome`). Bare names (`tsc`), wrappers (`npx tsc`), and chained/embedded commands are left to the normal prompt.
+- **auto-approve-shellcheck** — auto-approves pure `shellcheck` calls (bare or `npx [--yes] shellcheck[@version]`) — a read-only linter used constantly when developing hook scripts. Chained/embedded commands are left to the normal prompt.
 - **auto-approve-fs** — auto-approves `Read` / `Write` / `Edit` / `MultiEdit` whose target resolves inside the project tree (`$CLAUDE_PROJECT_DIR`). Files outside the project still prompt.
 
 ## Install
