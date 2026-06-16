@@ -1,0 +1,7 @@
+{
+  "name": "notify",
+  "version": "1.0.0",
+  "description": "Native desktop notification when Claude Code needs your attention — macOS, Linux and Windows.",
+  "author": { "name": "StellarTeams" },
+  "category": "productivity"
+}
