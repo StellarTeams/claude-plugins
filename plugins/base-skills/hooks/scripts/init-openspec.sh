@@ -15,6 +15,28 @@ ensure_openspec_cli() {
   command -v openspec >/dev/null 2>&1
 }
 
+# Keep an already-installed `openspec` on the latest version. Updates go
+# through the package manager that owns the binary (npm/pnpm/yarn/bun) and are
+# throttled to once a day via a stamp file, so session start stays fast and
+# works offline.
+update_openspec_cli() {
+  bin=$(command -v openspec) || return 0
+
+  stamp="${TMPDIR:-/tmp}/claude-openspec-update-check"
+  if [ -f "$stamp" ] && [ -n "$(find "$stamp" -mtime -1 2>/dev/null)" ]; then
+    return 0
+  fi
+  touch "$stamp"
+
+  case "$bin" in
+    */pnpm/*) pnpm add -g @fission-ai/openspec@latest >/dev/null 2>&1 ;;
+    */.bun/*) bun add -g @fission-ai/openspec@latest >/dev/null 2>&1 ;;
+    */yarn/* | */.yarn/*) yarn global add @fission-ai/openspec@latest >/dev/null 2>&1 ;;
+    *) npm install -g @fission-ai/openspec@latest >/dev/null 2>&1 ;;
+  esac
+  return 0
+}
+
 # Run an OpenSpec command via the global binary if present, else via npx.
 run_openspec() {
   if command -v openspec >/dev/null 2>&1; then
@@ -23,6 +45,8 @@ run_openspec() {
     npx --yes @fission-ai/openspec@latest "$@"
   fi
 }
+
+update_openspec_cli
 
 if [ ! -f "openspec/config.yaml" ]; then
   echo '{"additionalContext": "OpenSpec not found in this project — setting it up automatically..."}' >&2
@@ -38,6 +62,11 @@ else
   if ! ensure_openspec_cli; then
     echo '{"additionalContext": "⚠️ OpenSpec is set up but the `openspec` binary is not on PATH and could not be installed globally. The /opsx:* commands may fail with exit 127 — install it with `npm i -g @fission-ai/openspec`."}'
   fi
+  # Keep this project's generated .claude skills/commands in sync with the CLI.
+  # `openspec update` is a no-op when files are already up to date, and the CLI
+  # update above is throttled globally, so this is what carries a new CLI
+  # version into each project's instruction files.
+  run_openspec update >/dev/null 2>&1 || true
 fi
 
 exit 0

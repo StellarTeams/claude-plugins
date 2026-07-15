@@ -36,27 +36,34 @@ Always load and follow the `coding-guidelines` skill before generating spec.
 
 4. **Switch into the new worktree** using the `EnterWorktree` tool with the worktree path from step 3.
 
-   - **Do not ask about opening an editor here.** Switching the session into the worktree is *not* the moment to prompt for WebStorm/Zed — that is step 8, and only after the spec exists. Proceed straight to step 5.
+   - **Do not ask about opening an editor here.** Switching the session into the worktree is *not* the moment to prompt for WebStorm/Zed — that is step 9, and only after the spec exists. Proceed straight to step 5.
 
-5. **Ensure OpenSpec is initialized in the worktree.** The SessionStart hook only initializes OpenSpec in the directory the session started in; a freshly created worktree does **not** inherit it (no `.claude/` commands, no `openspec/config.yaml`). Check and initialize if missing:
+5. **Carry over the Claude session config that `git worktree add` doesn't.** A worktree checkout contains only *tracked* files, but plugin enablement and permissions live in files that are often untracked or gitignored — without them, a session restarted in the worktree loads no plugins and their skills/hooks are missing. For each of these two files, check with `test -f` whether it is missing in the worktree but present in the source repo root (the path from step 3, call 1); if so, `Read` it from the source repo and `Write` an identical copy into the worktree:
+
+   - `.claude/settings.json` — carries `enabledPlugins` and `extraKnownMarketplaces`; only missing when the repo doesn't track it
+   - `.claude/settings.local.json` — gitignored by convention; carries local permission grants
+
+   Do not overwrite a file that already exists in the worktree (it came from the checkout and is already correct).
+
+6. **Ensure OpenSpec is initialized in the worktree.** The SessionStart hook only initializes OpenSpec in the directory the session started in; a freshly created worktree does **not** inherit it. Guard on the generated `.claude` commands, **not** on `openspec/config.yaml` — the generated `.claude/commands/opsx/*` and `.claude/skills/openspec-*` are commonly gitignored while `config.yaml` may be tracked, so a checked-out `config.yaml` proves nothing about the commands being present:
 
    ```bash
-   test -f openspec/config.yaml || npx --yes @fission-ai/openspec@latest init --tools claude
+   test -f .claude/commands/opsx/propose.md || npx --yes @fission-ai/openspec@latest init --tools claude
    ```
 
-6. **Research the change in plan mode.** Before generating any spec, use plan mode to ground the proposal in the actual codebase and get the user's sign-off on the approach:
+7. **Research the change in plan mode.** Before generating any spec, use plan mode to ground the proposal in the actual codebase and get the user's sign-off on the approach:
 
    - **Call `EnterPlanMode` first — as the very first action of this step, before any `Read` / `Grep` / `Glob`.** Do **not** explore the codebase before entering plan mode; the user has already consented to plan mode by running `/spec`, and all the research below must happen *inside* plan mode so the user can see that nothing is being written yet. If you have already started reading files, call `EnterPlanMode` now before reading any more.
    - Then explore the worktree with `Read` / `Grep` / `Glob` to understand existing patterns, the concrete files the change will touch, and any relevant constraints. Follow the already-loaded `coding-guidelines` skill — search for existing functions, utilities, and patterns to reuse **before** proposing new code.
    - Write the researched plan to the plan file named in the plan-mode system message (under `~/.claude/plans/`). Capture what `/opsx:propose` will need downstream: **the problem/context, the proposed approach, the concrete files to change, and how to verify** — so the same plan serves as both the user-facing approval artifact and the input to propose.
    - Call **`ExitPlanMode`** so the user reviews and approves the plan. Their approval authorizes the propose/artifact-writing that follows.
 
-7. **Hand off to OpenSpec Propose, fed by the approved plan.** Invoke the `OPSX: Propose` skill (the `/opsx:propose` command) passing the original request as the change name/description. Ground its artifact authoring in the **approved plan** from step 6 (it is already in context; the plan file under `~/.claude/plans/` is also available to re-read) so that `proposal.md`, the spec deltas, and `tasks.md` are derived from the researched plan rather than the bare one-line request — this is what produces the ready-to-implement spec.
+8. **Hand off to OpenSpec Propose, fed by the approved plan.** Invoke the `OPSX: Propose` skill (the `/opsx:propose` command) passing the original request as the change name/description. Ground its artifact authoring in the **approved plan** from step 7 (it is already in context; the plan file under `~/.claude/plans/` is also available to re-read) so that `proposal.md`, the spec deltas, and `tasks.md` are derived from the researched plan rather than the bare one-line request — this is what produces the ready-to-implement spec.
 
    - If the `/opsx:propose` command/skill isn't yet available (it is loaded from `.claude/` at startup, so a worktree initialized mid-session may not expose it until a restart), tell the user to restart Claude Code in the worktree, then run `/opsx:propose "<request>"`.
    - Do **not** fall back to `npx … new change`: that only scaffolds an empty change and never writes the proposal content.
 
-8. **As the final step — and only after step 7 has produced the spec — ask the user whether to open the worktree in an editor.** This must be the *last* thing the skill does. Do not run this prompt earlier in the flow (in particular, not during or right after the worktree switch in step 4); if the spec from step 7 does not yet exist, you are too early. The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. The **only** way to ask is the **AskUserQuestion tool** — wait for the user to select an option:
+9. **As the final step — and only after step 8 has produced the spec — ask the user whether to open the worktree in an editor.** This must be the *last* thing the skill does. Do not run this prompt earlier in the flow (in particular, not during or right after the worktree switch in step 4); if the spec from step 8 does not yet exist, you are too early. The spec is already generated and you're already switched into the worktree — this is purely about opening an editor window. Do **not** launch anything automatically. The **only** way to ask is the **AskUserQuestion tool** — wait for the user to select an option:
    - **Don't open** — leave editors as-is; just keep working in this session
    - **WebStorm** — open the worktree in WebStorm
    - **Zed** — open the worktree in Zed
