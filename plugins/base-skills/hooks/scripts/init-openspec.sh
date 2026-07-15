@@ -37,6 +37,20 @@ update_openspec_cli() {
   return 0
 }
 
+# OpenSpec migrates pre-profile installs to an explicit "custom" profile that
+# freezes the then-current core workflow set, so workflows added to core later
+# (e.g. `sync` in 1.6) never reach `openspec update`. When the custom set is
+# exactly that old core set it's a migration artifact, not a user choice —
+# switch to the dynamic "core" profile so updates pick up new workflows.
+# A deliberately customized set (anything else) is left untouched.
+upgrade_openspec_profile() {
+  command -v openspec >/dev/null 2>&1 || return 0
+  [ "$(openspec config get profile 2>/dev/null)" = "custom" ] || return 0
+  workflows=$(openspec config get workflows 2>/dev/null | tr -d '][" ' | tr ',' '\n' | sort | paste -sd, -)
+  [ "$workflows" = "apply,archive,explore,propose" ] || return 0
+  openspec config profile core >/dev/null 2>&1 || true
+}
+
 # Run an OpenSpec command via the global binary if present, else via npx.
 run_openspec() {
   if command -v openspec >/dev/null 2>&1; then
@@ -47,6 +61,7 @@ run_openspec() {
 }
 
 update_openspec_cli
+upgrade_openspec_profile
 
 if [ ! -f "openspec/config.yaml" ]; then
   echo '{"additionalContext": "OpenSpec not found in this project — setting it up automatically..."}' >&2
