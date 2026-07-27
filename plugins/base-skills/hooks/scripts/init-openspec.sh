@@ -51,6 +51,17 @@ upgrade_openspec_profile() {
   openspec config profile core >/dev/null 2>&1 || true
 }
 
+# Does this project actually have the generated Claude Code integration?
+# OpenSpec records nothing about configured tools in openspec/config.yaml — the
+# CLI infers them from the generated files themselves, which its own init adds
+# to .gitignore. So a fresh clone of a project that committed openspec/config.yaml
+# has the config but none of the skills/commands, and `openspec update` then
+# exits 0 with "No configured tools found" and regenerates nothing, leaving the
+# /opsx:* commands permanently missing. Detect that state and re-init instead.
+claude_tools_present() {
+  [ -d ".claude/commands/opsx" ] || [ -n "$(find .claude/skills -maxdepth 1 -name 'openspec-*' -print -quit 2>/dev/null)" ]
+}
+
 # Run an OpenSpec command via the global binary if present, else via npx.
 run_openspec() {
   if command -v openspec >/dev/null 2>&1; then
@@ -63,10 +74,11 @@ run_openspec() {
 update_openspec_cli
 upgrade_openspec_profile
 
-if [ ! -f "openspec/config.yaml" ]; then
-  echo '{"additionalContext": "OpenSpec not found in this project — setting it up automatically..."}' >&2
+if [ ! -f "openspec/config.yaml" ] || ! claude_tools_present; then
   ensure_openspec_cli
-  if run_openspec init --tools claude 2>&1; then
+  # Keep init's own banner off stdout — this hook's stdout must be the JSON
+  # object below and nothing else, or Claude Code cannot parse it.
+  if run_openspec init --tools claude >/dev/null 2>&1; then
     echo '{"additionalContext": "OpenSpec initialized successfully. Skills and commands are ready in .claude/. Restart Claude Code if slash commands are not yet visible."}'
   else
     echo '{"additionalContext": "⚠️ OpenSpec init failed. Run `npx @fission-ai/openspec init --tools claude` manually to set it up."}'
