@@ -3,6 +3,21 @@ All notable changes to this project will be documented in this file.
 
 
 
+## [v26.07.31] - 2026-08-01
+### :sparkles: New Features
+- [`aed5427`](https://github.com/StellarTeams/claude-plugins/commit/aed5427b4f0dc97657bcb4af53ef3bbf5c8f922e) - keep openspec CLI and generated skills current, fix /spec worktree gaps *(commit by [@creativearmenia](https://github.com/creativearmenia))*
+- [`8f92d9f`](https://github.com/StellarTeams/claude-plugins/commit/8f92d9f576660a4fa29d92f27c930839c8d9710d) - auto-upgrade migrated openspec profile so new core workflows install *(commit by [@creativearmenia](https://github.com/creativearmenia))*
+
+### :bug: Bug Fixes
+- [`603a318`](https://github.com/StellarTeams/claude-plugins/commit/603a3185c4d6e278e0050e4477b0806802661a85) - re-init openspec when a clone has config but no generated files *(commit by [@creativearmenia](https://github.com/creativearmenia))*
+
+### :memo: Documentation Changes
+- [`8c18aa4`](https://github.com/StellarTeams/claude-plugins/commit/8c18aa4877241ebc80c430e52929fe776150c15e) - update CHANGELOG.md for v26.06.30 [skip ci] *(commit by [@creativearmenia](https://github.com/creativearmenia))*
+
+### :wrench: Chores
+- [`35f2ed9`](https://github.com/StellarTeams/claude-plugins/commit/35f2ed97eae997259bf5c4d92ab2523d2bc90b5d) - track openspec config and drop blanket openspec write permission *(commit by [@creativearmenia](https://github.com/creativearmenia))*
+
+
 ## [v26.06.30] - 2026-07-01
 ### :sparkles: New Features
 - [`c131f88`](https://github.com/StellarTeams/claude-plugins/commit/c131f883bc47034a6631644678198187ca4f91b0) - add coding guidelines skill *(commit by [@creativearmenia](https://github.com/creativearmenia))*
@@ -53,3 +68,4 @@ All notable changes to this project will be documented in this file.
 - [`09eb6a9`](https://github.com/StellarTeams/claude-plugins/commit/09eb6a9d7e3359ca2697f689d0a3a0ed6a2369c3) - allow git and openspec commands without permission prompts *(commit by [@creativearmenia](https://github.com/creativearmenia))*
 
 [v26.06.30]: https://github.com/StellarTeams/claude-plugins/compare/bc32bfec27e92d9081f970d3bf4decd63b8740e9...v26.06.30
+[v26.07.31]: https://github.com/StellarTeams/claude-plugins/compare/v26.06.30...v26.07.31
