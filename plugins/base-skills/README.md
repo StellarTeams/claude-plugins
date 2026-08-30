@@ -38,8 +38,15 @@ This plugin ships automation that runs without any manual setup:
 
 | Dependency | How it's handled |
 |-----------|-----------------|
-| **context7** | Auto-installed as a plugin dependency |
 | **@fission-ai/openspec** | Auto-run via `npx` (or global install) — no manual setup needed; provides the `/opsx:*` commands |
+
+**context7** is recommended but *not* required. The `coding-guidelines` skill suggests reaching for it to fetch up-to-date library docs, but no skill or hook here calls it. Install it separately if you want it:
+
+```bash
+/plugin install context7@claude-plugins-official
+```
+
+> Do not re-add context7 to this plugin's `dependencies`. Claude Code silently skips loading a plugin whose declared dependency is unresolved — so any project or worktree without context7 installed would lose every `base-skills` skill and hook with no error message.
 
 ## Usage
 
