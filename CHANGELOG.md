@@ -3,6 +3,14 @@ All notable changes to this project will be documented in this file.
 
 
 
+## [v26.08.31] - 2026-09-01
+### :bug: Bug Fixes
+- [`2613d15`](https://github.com/StellarTeams/claude-plugins/commit/2613d15b3c1e21777706a2ba0b10e3c464cec94f) - drop context7 hard dependency that silently disabled base-skills *(commit by [@creativearmenia](https://github.com/creativearmenia))*
+
+### :memo: Documentation Changes
+- [`5f7d5ab`](https://github.com/StellarTeams/claude-plugins/commit/5f7d5abcddaa16d9f97213108c29a71bda908096) - update CHANGELOG.md for v26.07.31 [skip ci] *(commit by [@creativearmenia](https://github.com/creativearmenia))*
+
+
 ## [v26.07.31] - 2026-08-01
 ### :sparkles: New Features
 - [`aed5427`](https://github.com/StellarTeams/claude-plugins/commit/aed5427b4f0dc97657bcb4af53ef3bbf5c8f922e) - keep openspec CLI and generated skills current, fix /spec worktree gaps *(commit by [@creativearmenia](https://github.com/creativearmenia))*
@@ -69,3 +77,4 @@ All notable changes to this project will be documented in this file.
 
 [v26.06.30]: https://github.com/StellarTeams/claude-plugins/compare/bc32bfec27e92d9081f970d3bf4decd63b8740e9...v26.06.30
 [v26.07.31]: https://github.com/StellarTeams/claude-plugins/compare/v26.06.30...v26.07.31
+[v26.08.31]: https://github.com/StellarTeams/claude-plugins/compare/v26.07.31...v26.08.31
